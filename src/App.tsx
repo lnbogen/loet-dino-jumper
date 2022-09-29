@@ -1,26 +1,12 @@
-import "./App.css";
+import Dino from "./Dino";
 
-import DinoIdle from "./assets/dino-idle.png";
-import DinoRunning from "./assets/dino-running.png";
-import DinoJumping from "./assets/dino-jumping.png";
+import "./App.css";
 
 const App = () => (
   <div>
-    <div className="dino idle">
-      <div>
-        <img src={DinoIdle} alt="" />
-      </div>
-    </div>
-    <div className="dino running">
-      <div>
-        <img src={DinoRunning} alt="" />
-      </div>
-    </div>
-    <div className="dino jumping">
-      <div>
-        <img src={DinoJumping} alt="" />
-      </div>
-    </div>
+    <Dino state="running" />
+    <Dino state="jumping" />
+    <Dino state="idle" />
   </div>
 );
 
