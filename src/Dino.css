@@ -3,6 +3,8 @@
   height: 150px;
   outline: 2px solid red;
   overflow: hidden;
+  position: absolute;
+  left: 100px;
 }
 
 .dino > div {

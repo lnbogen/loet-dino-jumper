@@ -5,10 +5,11 @@ import DinoRunning from "./assets/dino-running.png";
 import DinoJumping from "./assets/dino-jumping.png";
 import classNames from "classnames";
 
-type DinoState = "idle" | "running" | "jumping";
+import type { DinoState } from "./App";
 
 interface DinoProps {
   state: DinoState;
+  position: number;
 }
 
 const imageSources = {
@@ -17,17 +18,14 @@ const imageSources = {
   jumping: DinoJumping,
 };
 
-interface DinoProps {
-  state: DinoState;
-}
-
-const Dino = ({ state }: DinoProps) => {
+const Dino = ({ state, position }: DinoProps) => {
   return (
-    <div>
-      <div className={classNames("dino", state)}>
-        <div>
-          <img src={imageSources[state]} alt="" />
-        </div>
+    <div
+      className={classNames("dino", state)}
+      style={{ bottom: `calc(${position}px - 17px)` }}
+    >
+      <div>
+        <img src={imageSources[state]} alt="" />
       </div>
     </div>
   );
