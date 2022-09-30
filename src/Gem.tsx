@@ -23,7 +23,7 @@ const Gem = ({
   id,
   onTakeGem,
 }: GemProps) => {
-  const { gemRef } = useGem({ dinoRef, id, onTakeGem });
+  const { gemRef } = useGem({ dinoRef, id, isTaken, onTakeGem });
 
   return (
     <div

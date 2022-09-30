@@ -10,10 +10,11 @@ const defaultRect = {
 interface UseGemParams {
   dinoRef: React.RefObject<HTMLDivElement>;
   id: number;
+  isTaken: boolean;
   onTakeGem: (id: number) => void;
 }
 
-const useGem = ({ dinoRef, id, onTakeGem }: UseGemParams) => {
+const useGem = ({ dinoRef, id, isTaken, onTakeGem }: UseGemParams) => {
   const gemRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,7 +25,8 @@ const useGem = ({ dinoRef, id, onTakeGem }: UseGemParams) => {
         gemBox?.bottom > dinoBox?.top &&
         gemBox?.right > dinoBox?.left &&
         gemBox?.top < dinoBox?.bottom &&
-        gemBox?.left < dinoBox?.right
+        gemBox?.left < dinoBox?.right &&
+        !isTaken
       ) {
         onTakeGem(id);
       }
@@ -32,7 +34,7 @@ const useGem = ({ dinoRef, id, onTakeGem }: UseGemParams) => {
     return () => {
       clearInterval(collisionDetectionInterval);
     };
-  }, [dinoRef, id, onTakeGem]);
+  }, [dinoRef, id, isTaken, onTakeGem]);
 
   return { gemRef };
 };

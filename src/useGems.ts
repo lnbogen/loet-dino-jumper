@@ -23,6 +23,11 @@ const getNewGem = () => ({
 
 const useGems = ({ dinoSpeed }: UseGemsParams) => {
   const [gems, setGems] = useState([getNewGem()]);
+  const [gemCounter, setGemCounter] = useState(0);
+
+  const increaseGemCounter = useCallback(() => {
+    setGemCounter((previousGemCounter) => previousGemCounter + 1);
+  }, []);
 
   useEffect(() => {
     const moveInterval = setInterval(() => {
@@ -59,21 +64,25 @@ const useGems = ({ dinoSpeed }: UseGemsParams) => {
     };
   }, [dinoSpeed, gems.length]);
 
-  const onTakeGem = useCallback((gemId: number) => {
-    setGems((previousGems) =>
-      previousGems.map((gem) => {
-        if (gemId !== gem.id) {
-          return gem;
-        }
-        return {
-          ...gem,
-          isTaken: true,
-        };
-      })
-    );
-  }, []);
+  const onTakeGem = useCallback(
+    (gemId: number) => {
+      setGems((previousGems) =>
+        previousGems.map((gem) => {
+          if (gemId !== gem.id) {
+            return gem;
+          }
+          return {
+            ...gem,
+            isTaken: true,
+          };
+        })
+      );
+      increaseGemCounter();
+    },
+    [increaseGemCounter]
+  );
 
-  return { gems, onTakeGem };
+  return { gems, gemCounter, onTakeGem };
 };
 
 export default useGems;
