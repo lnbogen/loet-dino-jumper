@@ -8,7 +8,7 @@ interface GroundProps {
 
 const Ground = ({ dinoSpeed }: GroundProps) => (
   <WorldElement
-    speed={dinoSpeed * 7}
+    speed={dinoSpeed * 4}
     tileWidth={267}
     tileHeight={200}
     tileUrl={GroundTexture}

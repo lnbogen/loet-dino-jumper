@@ -2,6 +2,7 @@ import { useMemo } from "react";
 
 import Sky from "./Sky";
 import Hills from "./Hills";
+import Gems from "./Gems";
 import Dino from "./Dino";
 import Ground from "./Ground";
 import useDinoState from "./useDinoState";
@@ -23,6 +24,7 @@ const App = () => {
       <div>
         <Sky dinoSpeed={dinoSpeed} />
         <Hills dinoSpeed={dinoSpeed} />
+        <Gems dinoSpeed={dinoSpeed} />
         <Dino
           state={dinoState}
           position={dinoPosition}
