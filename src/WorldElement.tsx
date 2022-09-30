@@ -7,6 +7,7 @@ interface WorldElementProps {
   tileUrl: string;
   tileWidth: number;
   tileHeight: number;
+  alignment?: "top" | "bottom";
 }
 
 const WorldElement = ({
@@ -14,6 +15,7 @@ const WorldElement = ({
   tileUrl,
   tileWidth,
   tileHeight,
+  alignment = "bottom",
 }: WorldElementProps) => {
   const numberOfTiles = Math.ceil(window.innerWidth / tileWidth) + 1;
 
@@ -35,14 +37,13 @@ const WorldElement = ({
             newPositions[newPositions.length - 1] + tileWidth,
           ];
         }
-        console.log(newPositions);
         return newPositions;
       });
     }, 10);
     return () => {
       clearInterval(moveInterval);
     };
-  }, [speed]);
+  }, [speed, tileWidth]);
 
   return (
     <div className="world-element-wrapper">
@@ -55,6 +56,8 @@ const WorldElement = ({
             width: tileWidth,
             height: tileHeight,
             backgroundImage: `url('${tileUrl}')`,
+            ...(alignment === "top" && { top: 0 }),
+            ...(alignment === "bottom" && { bottom: 0 }),
           }}
         />
       ))}
