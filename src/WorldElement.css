@@ -1,0 +1,7 @@
+.world-element-wrapper {
+  position: relative;
+}
+
+.world-element-wrapper .tile {
+  position: absolute;
+}
