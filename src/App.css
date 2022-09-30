@@ -6,38 +6,6 @@
   overflow: hidden;
 }
 
-.game-canvas .sky {
-  background: linear-gradient(to bottom, #90dffe 0%, #38a3d1 100%);
+.game-canvas > div {
   position: relative;
-}
-
-.game-canvas .ground {
-  background-size: auto 100%;
-}
-
-.game-canvas .ground.moving {
-  animation: ground-move 0.5s linear infinite;
-}
-
-.sky .sun {
-  width: 100px;
-  height: 100px;
-  background-color: hsl(48deg 100% 50%);
-  box-shadow: 0 0 150px hsl(48deg 100% 75%);
-  border: 2px solid hsla(48deg 100% 40% / 50%);
-  border-width: 3px 1px;
-  border-radius: 50%;
-  position: absolute;
-  top: 100px;
-  right: 100px;
-}
-
-@keyframes ground-move {
-  from {
-    background-position: 0 0;
-  }
-
-  to {
-    background-position: -267px 0;
-  }
 }
