@@ -3,27 +3,9 @@
   height: 100%;
   display: grid;
   grid-template-rows: 1fr 200px;
+  overflow: hidden;
 }
 
-.game-canvas .sky {
-  background: linear-gradient(to bottom, #90dffe 0%, #38a3d1 100%);
+.game-canvas > div {
   position: relative;
-}
-
-.game-canvas .ground {
-  background-size: auto 100%;
-}
-
-.game-canvas .ground.moving {
-  animation: ground-move 0.5s linear infinite;
-}
-
-@keyframes ground-move {
-  from {
-    background-position: 0 0;
-  }
-
-  to {
-    background-position: -267px 0;
-  }
 }

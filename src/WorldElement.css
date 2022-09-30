@@ -1,0 +1,10 @@
+.world-element-wrapper {
+  position: absolute;
+  top: 0;
+  height: 100%;
+}
+
+.world-element-wrapper .tile {
+  position: absolute;
+  bottom: 0;
+}
