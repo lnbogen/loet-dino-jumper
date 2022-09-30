@@ -5,7 +5,6 @@ import {
   gravity,
   minimumJumpAcceleration,
   maximumJumpAcceleration,
-  flipJumpAccelerationThreshold,
 } from "./constants";
 
 export type DinoState = "idle" | "running" | "jumping";
