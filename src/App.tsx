@@ -2,14 +2,15 @@ import { useMemo } from "react";
 
 import Sky from "./Sky";
 import Hills from "./Hills";
+import Gems from "./Gems";
 import Dino from "./Dino";
 import Ground from "./Ground";
-import useDinoState from "./useDinoState";
+import useDino from "./useDino";
 
 import "./App.css";
 
 const App = () => {
-  const { dinoState, dinoPosition, isDinoFlipping } = useDinoState();
+  const { dinoState, dinoPosition, isDinoFlipping, dinoRef } = useDino();
 
   const dinoSpeed = useMemo(() => {
     if (["running", "jumping"].includes(dinoState)) {
@@ -27,7 +28,9 @@ const App = () => {
           state={dinoState}
           position={dinoPosition}
           isFlipping={isDinoFlipping}
+          dinoRef={dinoRef}
         />
+        <Gems dinoSpeed={dinoSpeed} dinoRef={dinoRef} />
       </div>
       <div>
         <Ground dinoSpeed={dinoSpeed} />

@@ -5,12 +5,13 @@ import DinoRunning from "./assets/dino-running.png";
 import DinoJumping from "./assets/dino-jumping.png";
 import classNames from "classnames";
 
-import type { DinoState } from "./useDinoState";
+import type { DinoState } from "./useDino";
 
 interface DinoProps {
   state: DinoState;
   position: number;
   isFlipping: boolean;
+  dinoRef: React.RefObject<HTMLDivElement>;
 }
 
 const imageSources = {
@@ -19,11 +20,12 @@ const imageSources = {
   jumping: DinoJumping,
 };
 
-const Dino = ({ state, position, isFlipping }: DinoProps) => {
+const Dino = ({ state, position, isFlipping, dinoRef }: DinoProps) => {
   return (
     <div
       className={classNames("dino", state, { flipping: isFlipping })}
       style={{ bottom: `calc(${position}px - 17px)` }}
+      ref={dinoRef}
     >
       <div>
         <img src={imageSources[state]} alt="" />
