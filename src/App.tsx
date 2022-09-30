@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import useOnMount from "react-hook-on-mount";
 
 import Dino from "./Dino";
@@ -58,10 +58,13 @@ const App = () => {
     };
   }, [dinoAcceleration, dinoPosition]);
 
-  // Jump
-  useEffect(() => {
-    const dinoJumpButtonDownListener = (event: KeyboardEvent) => {
-      if (event.key === " " && dinoState === "running") {
+  const dinoJumpButtonDownListener = useCallback(
+    (event: KeyboardEvent | MouseEvent) => {
+      if (
+        ((event.type === "keydown" && (event as KeyboardEvent).key === " ") ||
+          (event.type === "mousedown" && (event as MouseEvent).button === 0)) &&
+        dinoState === "running"
+      ) {
         setJumpButtonDownTimestamp((previousTimestamp) => {
           if (previousTimestamp === null) {
             return event.timeStamp;
@@ -70,15 +73,19 @@ const App = () => {
           }
         });
       }
-    };
+    },
+    [dinoState]
+  );
 
-    document.addEventListener("keydown", dinoJumpButtonDownListener);
-
-    const dinoJumpButtonUpListener = (event: KeyboardEvent) => {
-      if (event.key === " " && dinoState === "running") {
+  const dinoJumpButtonUpListener = useCallback(
+    (event: KeyboardEvent | MouseEvent) => {
+      if (
+        ((event.type === "keyup" && (event as KeyboardEvent).key === " ") ||
+          (event.type === "mouseup" && (event as MouseEvent).button === 0)) &&
+        dinoState === "running"
+      ) {
         const jumpButtonPressDuration =
           event.timeStamp - (jumpButtonDownTimestamp ?? 0);
-        console.log(jumpButtonPressDuration);
         const accelerationChange = Math.max(
           3,
           Math.min(jumpButtonPressDuration / 75, 8)
@@ -92,15 +99,24 @@ const App = () => {
         );
         setJumpButtonDownTimestamp(null);
       }
-    };
+    },
+    [dinoState, jumpButtonDownTimestamp]
+  );
 
+  // Jump
+  useEffect(() => {
+    document.addEventListener("keydown", dinoJumpButtonDownListener);
     document.addEventListener("keyup", dinoJumpButtonUpListener);
+    document.addEventListener("mousedown", dinoJumpButtonDownListener);
+    document.addEventListener("mouseup", dinoJumpButtonUpListener);
 
     return () => {
       document.removeEventListener("keydown", dinoJumpButtonDownListener);
       document.removeEventListener("keyup", dinoJumpButtonUpListener);
+      document.removeEventListener("mousedown", dinoJumpButtonDownListener);
+      document.removeEventListener("mouseup", dinoJumpButtonUpListener);
     };
-  }, [dinoState, jumpButtonDownTimestamp]);
+  }, [dinoJumpButtonDownListener, dinoJumpButtonUpListener]);
 
   return (
     <div className="game-canvas">
