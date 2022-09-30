@@ -10,6 +10,7 @@ import type { DinoState } from "./App";
 interface DinoProps {
   state: DinoState;
   position: number;
+  isFlipping: boolean;
 }
 
 const imageSources = {
@@ -18,10 +19,10 @@ const imageSources = {
   jumping: DinoJumping,
 };
 
-const Dino = ({ state, position }: DinoProps) => {
+const Dino = ({ state, position, isFlipping }: DinoProps) => {
   return (
     <div
-      className={classNames("dino", state)}
+      className={classNames("dino", state, { flipping: isFlipping })}
       style={{ bottom: `calc(${position}px - 17px)` }}
     >
       <div>

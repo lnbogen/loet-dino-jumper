@@ -1,8 +1,6 @@
 .dino {
   width: 150px;
   height: 150px;
-  outline: 2px solid red;
-  overflow: hidden;
   position: absolute;
   left: 100px;
 }
@@ -12,8 +10,8 @@
   background-repeat: no-repeat;
   height: 100%;
   background-size: auto 100%;
-  outline: 1px solid green;
   position: relative;
+  overflow: hidden;
 }
 
 .dino.idle > div > img {
@@ -59,5 +57,20 @@
 
   to {
     left: -1650px;
+  }
+}
+
+.dino.jumping.flipping > div {
+  animation: dino-flip 1.8s forwards 1;
+  animation-delay: 0.1s;
+}
+
+@keyframes dino-flip {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
   }
 }
