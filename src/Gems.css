@@ -4,28 +4,3 @@
   height: 100%;
   top: 0;
 }
-
-.gem-wrapper {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-}
-
-.gem-wrapper.taken {
-  animation: take-gem 0.5s 1 forwards;
-}
-
-@keyframes take-gem {
-  from {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  to {
-    transform: scale(2);
-    opacity: 0;
-  }
-}
