@@ -5,12 +5,12 @@ import Hills from "./Hills";
 import Gems from "./Gems";
 import Dino from "./Dino";
 import Ground from "./Ground";
-import useDinoState from "./useDinoState";
+import useDino from "./useDino";
 
 import "./App.css";
 
 const App = () => {
-  const { dinoState, dinoPosition, isDinoFlipping, dinoRef } = useDinoState();
+  const { dinoState, dinoPosition, isDinoFlipping, dinoRef } = useDino();
 
   const dinoSpeed = useMemo(() => {
     if (["running", "jumping"].includes(dinoState)) {

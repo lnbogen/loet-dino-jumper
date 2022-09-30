@@ -16,7 +16,7 @@ const gemImageUrls = [Gem1, Gem2, Gem3, Gem4, Gem5, Gem6];
 const getNewGem = () => ({
   id: Date.now(),
   left: window.innerWidth + 50,
-  bottom: Math.floor(Math.random() * 600),
+  bottom: Math.floor(Math.random() * 400),
   imageUrl: gemImageUrls[Math.floor(Math.random() * gemImageUrls.length)],
   isTaken: false,
 });
@@ -48,12 +48,12 @@ const useGems = ({ dinoSpeed }: UseGemsParams) => {
   useEffect(() => {
     const generateGemInterval = setInterval(() => {
       setGems((previousGems) => {
-        if (previousGems.length < 5) {
+        if (previousGems.length < 10) {
           return [...previousGems, getNewGem()];
         }
         return previousGems;
       });
-    }, 2000);
+    }, 800);
     return () => {
       clearInterval(generateGemInterval);
     };

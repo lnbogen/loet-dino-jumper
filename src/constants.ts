@@ -2,6 +2,6 @@ export const gravity = 0.07;
 
 export const minimumJumpAcceleration = 3;
 
-export const maximumJumpAcceleration = 7;
+export const maximumJumpAcceleration = 8;
 
 export const flipJumpAccelerationThreshold = 6;

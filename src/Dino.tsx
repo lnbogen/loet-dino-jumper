@@ -5,7 +5,7 @@ import DinoRunning from "./assets/dino-running.png";
 import DinoJumping from "./assets/dino-jumping.png";
 import classNames from "classnames";
 
-import type { DinoState } from "./useDinoState";
+import type { DinoState } from "./useDino";
 
 interface DinoProps {
   state: DinoState;

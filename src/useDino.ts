@@ -10,14 +10,13 @@ import {
 
 export type DinoState = "idle" | "running" | "jumping";
 
-const useDinoState = () => {
+const useDino = () => {
   const [dinoState, setDinoState] = useState<DinoState>("idle");
   const [dinoPosition, setDinoPosition] = useState(0);
   const [dinoAcceleration, setDinoAcceleration] = useState(0);
   const [isDinoFlipping, setIsDinoFlipping] = useState(false);
-  const [jumpButtonDownTimestamp, setJumpButtonDownTimestamp] = useState<
-    number | null
-  >(null);
+
+  const accelerationCounter = useRef(0);
 
   const dinoRef = useRef<HTMLDivElement>(null);
 
@@ -58,6 +57,17 @@ const useDinoState = () => {
     };
   }, [dinoAcceleration, dinoPosition]);
 
+  const dinoAccelerationTimeout = useCallback(() => {
+    if (accelerationCounter.current > 0) {
+      accelerationCounter.current--;
+      setDinoAcceleration((previousAcceleration) => previousAcceleration - 1);
+      setTimeout(dinoAccelerationTimeout, 100);
+    }
+    if (accelerationCounter.current === 1) {
+      setIsDinoFlipping(true);
+    }
+  }, []);
+
   const dinoJumpButtonDownListener = useCallback(
     (event: KeyboardEvent | MouseEvent) => {
       if (
@@ -65,42 +75,30 @@ const useDinoState = () => {
           (event.type === "mousedown" && (event as MouseEvent).button === 0)) &&
         dinoState === "running"
       ) {
-        setJumpButtonDownTimestamp((previousTimestamp) => {
-          if (previousTimestamp === null) {
-            return event.timeStamp;
-          } else {
-            return previousTimestamp;
-          }
-        });
+        setDinoState("jumping");
+        setDinoAcceleration(
+          (previousAcceleration) =>
+            previousAcceleration - minimumJumpAcceleration
+        );
+        accelerationCounter.current =
+          maximumJumpAcceleration - minimumJumpAcceleration + 1;
+
+        setTimeout(dinoAccelerationTimeout, 100);
       }
     },
-    [dinoState]
+    [dinoAccelerationTimeout, dinoState]
   );
 
   const dinoJumpButtonUpListener = useCallback(
     (event: KeyboardEvent | MouseEvent) => {
       if (
-        ((event.type === "keyup" && (event as KeyboardEvent).key === " ") ||
-          (event.type === "mouseup" && (event as MouseEvent).button === 0)) &&
-        dinoState === "running"
+        (event.type === "keyup" && (event as KeyboardEvent).key === " ") ||
+        (event.type === "mouseup" && (event as MouseEvent).button === 0)
       ) {
-        const jumpButtonPressDuration =
-          event.timeStamp - (jumpButtonDownTimestamp ?? 0);
-        const accelerationChange = Math.max(
-          minimumJumpAcceleration,
-          Math.min(jumpButtonPressDuration / 75, maximumJumpAcceleration)
-        );
-        if (accelerationChange > flipJumpAccelerationThreshold) {
-          setIsDinoFlipping(true);
-        }
-        setDinoState("jumping");
-        setDinoAcceleration(
-          (previousAcceleration) => previousAcceleration - accelerationChange
-        );
-        setJumpButtonDownTimestamp(null);
+        accelerationCounter.current = 0;
       }
     },
-    [dinoState, jumpButtonDownTimestamp]
+    []
   );
 
   // Jump
@@ -121,4 +119,4 @@ const useDinoState = () => {
   return { dinoState, dinoPosition, isDinoFlipping, dinoRef };
 };
 
-export default useDinoState;
+export default useDino;
