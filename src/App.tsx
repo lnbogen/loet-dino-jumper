@@ -10,7 +10,7 @@ import useDinoState from "./useDinoState";
 import "./App.css";
 
 const App = () => {
-  const { dinoState, dinoPosition, isDinoFlipping } = useDinoState();
+  const { dinoState, dinoPosition, isDinoFlipping, dinoRef } = useDinoState();
 
   const dinoSpeed = useMemo(() => {
     if (["running", "jumping"].includes(dinoState)) {
@@ -24,12 +24,13 @@ const App = () => {
       <div>
         <Sky dinoSpeed={dinoSpeed} />
         <Hills dinoSpeed={dinoSpeed} />
-        <Gems dinoSpeed={dinoSpeed} />
         <Dino
           state={dinoState}
           position={dinoPosition}
           isFlipping={isDinoFlipping}
+          dinoRef={dinoRef}
         />
+        <Gems dinoSpeed={dinoSpeed} dinoRef={dinoRef} />
       </div>
       <div>
         <Ground dinoSpeed={dinoSpeed} />

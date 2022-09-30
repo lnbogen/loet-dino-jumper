@@ -11,6 +11,7 @@ interface DinoProps {
   state: DinoState;
   position: number;
   isFlipping: boolean;
+  dinoRef: React.RefObject<HTMLDivElement>;
 }
 
 const imageSources = {
@@ -19,11 +20,12 @@ const imageSources = {
   jumping: DinoJumping,
 };
 
-const Dino = ({ state, position, isFlipping }: DinoProps) => {
+const Dino = ({ state, position, isFlipping, dinoRef }: DinoProps) => {
   return (
     <div
       className={classNames("dino", state, { flipping: isFlipping })}
       style={{ bottom: `calc(${position}px - 17px)` }}
+      ref={dinoRef}
     >
       <div>
         <img src={imageSources[state]} alt="" />

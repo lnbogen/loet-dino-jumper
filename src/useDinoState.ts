@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import useOnMount from "react-hook-on-mount";
 
 import {
@@ -18,6 +18,8 @@ const useDinoState = () => {
   const [jumpButtonDownTimestamp, setJumpButtonDownTimestamp] = useState<
     number | null
   >(null);
+
+  const dinoRef = useRef<HTMLDivElement>(null);
 
   // Start running after 1s
   useOnMount(() => {
@@ -116,7 +118,7 @@ const useDinoState = () => {
     };
   }, [dinoJumpButtonDownListener, dinoJumpButtonUpListener]);
 
-  return { dinoState, dinoPosition, isDinoFlipping };
+  return { dinoState, dinoPosition, isDinoFlipping, dinoRef };
 };
 
 export default useDinoState;
