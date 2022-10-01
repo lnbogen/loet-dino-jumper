@@ -10,8 +10,9 @@ import type { DinoState } from "./useDino";
 interface DinoProps {
   state: DinoState;
   position: number;
-  isFlipping: boolean;
-  dinoRef: React.RefObject<HTMLDivElement>;
+  isFlipping?: boolean;
+  isMain?: boolean;
+  dinoRef?: React.RefObject<HTMLDivElement>;
 }
 
 const imageSources = {
@@ -20,10 +21,19 @@ const imageSources = {
   jumping: DinoJumping,
 };
 
-const Dino = ({ state, position, isFlipping, dinoRef }: DinoProps) => {
+const Dino = ({
+  state,
+  position,
+  isFlipping = false,
+  isMain = false,
+  dinoRef,
+}: DinoProps) => {
   return (
     <div
-      className={classNames("dino", state, { flipping: isFlipping })}
+      className={classNames("dino", state, {
+        flipping: isFlipping,
+        main: isMain,
+      })}
       style={{ bottom: `calc(${position}px - 17px)` }}
       ref={dinoRef}
     >

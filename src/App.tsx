@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
 
 import Sky from "./Sky";
 import Hills from "./Hills";
@@ -10,6 +10,7 @@ import Countdown from "./Countdown";
 import useDino from "./useDino";
 
 import "./App.css";
+import DinoFamily from "./DinoFamily";
 
 const App = () => {
   const { dinoState, dinoPosition, isDinoFlipping, dinoRef, startDino } =
@@ -24,19 +25,27 @@ const App = () => {
 
   const [isCountdownVisible, setIsCountdownVisible] = useState(false);
 
+  const onFinishGame = useCallback(() => {}, []);
+
   return (
     <>
       <div className="game-canvas">
         <div>
           <Sky dinoSpeed={dinoSpeed} />
           <Hills dinoSpeed={dinoSpeed} />
-          <Gems dinoSpeed={dinoSpeed} dinoRef={dinoRef} />
+          <Gems
+            dinoSpeed={dinoSpeed}
+            dinoRef={dinoRef}
+            onFinishGame={onFinishGame}
+          />
           <Dino
             state={dinoState}
             position={dinoPosition}
             isFlipping={isDinoFlipping}
             dinoRef={dinoRef}
+            isMain
           />
+          <DinoFamily />
         </div>
         <div>
           <Ground dinoSpeed={dinoSpeed} />
@@ -47,16 +56,7 @@ const App = () => {
           setIsCountdownVisible(true);
         }}
       />
-      {isCountdownVisible && (
-        <Countdown
-          onHide={() => {
-            startDino();
-            setTimeout(() => {
-              setIsCountdownVisible(false);
-            }, 5000);
-          }}
-        />
-      )}
+      {isCountdownVisible && <Countdown onHide={startDino} />}
     </>
   );
 };

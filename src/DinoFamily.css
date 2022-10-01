@@ -1,0 +1,19 @@
+.dino-family-wrapper {
+  position: absolute;
+  bottom: 0;
+  left: 300px;
+  display: flex;
+}
+
+.dino-parent-wrapper {
+  transform: scaleX(-1);
+  height: 100%;
+  width: 150px;
+}
+
+.dino-child-wrapper {
+  transform: scaleX(-1) scale(0.6) translateX(360px);
+  transform-origin: bottom;
+  height: 100%;
+  width: 150px;
+}

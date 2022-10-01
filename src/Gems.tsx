@@ -8,10 +8,11 @@ import "./Gems.css";
 interface GemsProps {
   dinoSpeed: number;
   dinoRef: React.RefObject<HTMLDivElement>;
+  onFinishGame: () => void;
 }
 
-const Gems = ({ dinoSpeed, dinoRef }: GemsProps) => {
-  const { gems, gemCounter, onTakeGem } = useGems({ dinoSpeed });
+const Gems = ({ dinoSpeed, dinoRef, onFinishGame }: GemsProps) => {
+  const { gems, gemCounter, onTakeGem } = useGems({ dinoSpeed, onFinishGame });
 
   return (
     <>

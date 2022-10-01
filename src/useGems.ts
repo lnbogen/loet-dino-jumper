@@ -9,6 +9,7 @@ import Gem6 from "./assets/gem-6.png";
 
 interface UseGemsParams {
   dinoSpeed: number;
+  onFinishGame: () => void;
 }
 
 const gemImageUrls = [Gem1, Gem2, Gem3, Gem4, Gem5, Gem6];
@@ -21,13 +22,19 @@ const getNewGem = () => ({
   isTaken: false,
 });
 
-const useGems = ({ dinoSpeed }: UseGemsParams) => {
+const useGems = ({ dinoSpeed, onFinishGame }: UseGemsParams) => {
   const [gems, setGems] = useState([getNewGem()]);
   const [gemCounter, setGemCounter] = useState(0);
 
   const increaseGemCounter = useCallback(() => {
     setGemCounter((previousGemCounter) => previousGemCounter + 1);
   }, []);
+
+  useEffect(() => {
+    if (gemCounter === 100) {
+      onFinishGame();
+    }
+  }, [onFinishGame, gemCounter]);
 
   useEffect(() => {
     const moveInterval = setInterval(() => {
