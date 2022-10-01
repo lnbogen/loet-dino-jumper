@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 
 import Sky from "./Sky";
 import Hills from "./Hills";
@@ -6,6 +6,7 @@ import Gems from "./Gems";
 import Dino from "./Dino";
 import Ground from "./Ground";
 import Splash from "./Splash";
+import Countdown from "./Countdown";
 import useDino from "./useDino";
 
 import "./App.css";
@@ -20,6 +21,8 @@ const App = () => {
     }
     return 0;
   }, [dinoState]);
+
+  const [isCountdownVisible, setIsCountdownVisible] = useState(false);
 
   return (
     <>
@@ -41,9 +44,19 @@ const App = () => {
       </div>
       <Splash
         onStartGame={() => {
-          startDino();
+          setIsCountdownVisible(true);
         }}
       />
+      {isCountdownVisible && (
+        <Countdown
+          onHide={() => {
+            startDino();
+            setTimeout(() => {
+              setIsCountdownVisible(false);
+            }, 5000);
+          }}
+        />
+      )}
     </>
   );
 };
