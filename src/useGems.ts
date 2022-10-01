@@ -14,6 +14,8 @@ interface UseGemsParams {
 
 const gemImageUrls = [Gem1, Gem2, Gem3, Gem4, Gem5, Gem6];
 
+const gameGemsNumber = 100;
+
 const getNewGem = () => ({
   id: Date.now(),
   left: window.innerWidth + 50,
@@ -31,7 +33,7 @@ const useGems = ({ dinoSpeed, onFinishGame }: UseGemsParams) => {
   }, []);
 
   useEffect(() => {
-    if (gemCounter === 100) {
+    if (gemCounter === gameGemsNumber) {
       onFinishGame();
     }
   }, [onFinishGame, gemCounter]);
@@ -60,7 +62,7 @@ const useGems = ({ dinoSpeed, onFinishGame }: UseGemsParams) => {
   useEffect(() => {
     const generateGemInterval = setInterval(() => {
       setGems((previousGems) => {
-        if (dinoSpeed > 0 && gemCounter < 100) {
+        if (dinoSpeed > 0 && gemCounter < gameGemsNumber) {
           return [...previousGems, getNewGem()];
         }
         return previousGems;

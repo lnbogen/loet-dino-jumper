@@ -13,8 +13,22 @@ import "./App.css";
 import DinoFamily from "./DinoFamily";
 
 const App = () => {
-  const { dinoState, dinoPosition, isDinoFlipping, dinoRef, startDino } =
-    useDino();
+  const [isCountdownVisible, setIsCountdownVisible] = useState(false);
+
+  const [isGameFinished, setIsGameFinished] = useState(false);
+
+  const onFinishGame = useCallback(() => {
+    setIsGameFinished(true);
+  }, []);
+
+  const {
+    dinoState,
+    dinoPosition,
+    isDinoFlipping,
+    dinoRef,
+    startDino,
+    stopDino,
+  } = useDino({ isGameFinished });
 
   const dinoSpeed = useMemo(() => {
     if (["running", "jumping"].includes(dinoState)) {
@@ -22,10 +36,6 @@ const App = () => {
     }
     return 0;
   }, [dinoState]);
-
-  const [isCountdownVisible, setIsCountdownVisible] = useState(false);
-
-  const onFinishGame = useCallback(() => {}, []);
 
   return (
     <>
@@ -45,7 +55,9 @@ const App = () => {
             dinoRef={dinoRef}
             isMain
           />
-          <DinoFamily />
+          {isGameFinished && (
+            <DinoFamily dinoSpeed={dinoSpeed} stopDino={stopDino} />
+          )}
         </div>
         <div>
           <Ground dinoSpeed={dinoSpeed} />
