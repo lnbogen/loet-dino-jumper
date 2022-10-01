@@ -53,16 +53,16 @@ const useGems = ({ dinoSpeed }: UseGemsParams) => {
   useEffect(() => {
     const generateGemInterval = setInterval(() => {
       setGems((previousGems) => {
-        if (previousGems.length < 10) {
+        if (dinoSpeed > 0 && gemCounter < 100) {
           return [...previousGems, getNewGem()];
         }
         return previousGems;
       });
-    }, 800);
+    }, 1500);
     return () => {
       clearInterval(generateGemInterval);
     };
-  }, [dinoSpeed, gems.length]);
+  }, [dinoSpeed, gemCounter]);
 
   const onTakeGem = useCallback(
     (gemId: number) => {
