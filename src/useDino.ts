@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import useOnMount from "react-hook-on-mount";
 
 import {
   gravity,
@@ -19,12 +18,9 @@ const useDino = () => {
 
   const dinoRef = useRef<HTMLDivElement>(null);
 
-  // Start running after 1s
-  useOnMount(() => {
-    setTimeout(() => {
-      setDinoState("running");
-    }, 1000);
-  });
+  const startDino = useCallback(() => {
+    setDinoState("running");
+  }, []);
 
   // Accelerate dino
   useEffect(() => {
@@ -115,7 +111,7 @@ const useDino = () => {
     };
   }, [dinoJumpButtonDownListener, dinoJumpButtonUpListener]);
 
-  return { dinoState, dinoPosition, isDinoFlipping, dinoRef };
+  return { dinoState, dinoPosition, isDinoFlipping, dinoRef, startDino };
 };
 
 export default useDino;
