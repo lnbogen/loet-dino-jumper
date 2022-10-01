@@ -24,13 +24,13 @@ const App = () => {
       <div>
         <Sky dinoSpeed={dinoSpeed} />
         <Hills dinoSpeed={dinoSpeed} />
+          <Gems dinoSpeed={dinoSpeed} dinoRef={dinoRef} />
         <Dino
           state={dinoState}
           position={dinoPosition}
           isFlipping={isDinoFlipping}
           dinoRef={dinoRef}
         />
-        <Gems dinoSpeed={dinoSpeed} dinoRef={dinoRef} />
       </div>
       <div>
         <Ground dinoSpeed={dinoSpeed} />
