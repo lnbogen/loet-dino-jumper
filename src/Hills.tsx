@@ -13,7 +13,7 @@ const Hills = ({ dinoSpeed }: HillsProps) => (
   <>
     <WorldElement
       speed={dinoSpeed * 0.5}
-      tileWidth={1600}
+      tileWidth={1722}
       tileHeight={600}
       tileUrl={Volcano}
     />
