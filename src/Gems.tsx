@@ -8,11 +8,24 @@ import "./Gems.css";
 interface GemsProps {
   dinoSpeed: number;
   dinoRef: React.RefObject<HTMLDivElement>;
+  onStartTrain: () => void;
   onFinishGame: () => void;
+  isDinoOnTrain: boolean;
 }
 
-const Gems = ({ dinoSpeed, dinoRef, onFinishGame }: GemsProps) => {
-  const { gems, gemCounter, onTakeGem } = useGems({ dinoSpeed, onFinishGame });
+const Gems = ({
+  dinoSpeed,
+  dinoRef,
+  isDinoOnTrain,
+  onStartTrain,
+  onFinishGame,
+}: GemsProps) => {
+  const { gems, gemCounter, onTakeGem } = useGems({
+    dinoSpeed,
+    onStartTrain,
+    onFinishGame,
+    isDinoOnTrain,
+  });
 
   return (
     <>

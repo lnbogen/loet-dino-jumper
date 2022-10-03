@@ -1,42 +1,79 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
-import Gem1 from "./assets/gem-1.png";
-import Gem2 from "./assets/gem-2.png";
-import Gem3 from "./assets/gem-3.png";
-import Gem4 from "./assets/gem-4.png";
-import Gem5 from "./assets/gem-5.png";
-import Gem6 from "./assets/gem-6.png";
+import {
+  gemImageUrls,
+  numberOfGemsToCollect,
+  trainShowsUpAtNumberOfGemsCollected,
+} from "./constants";
 
 interface UseGemsParams {
   dinoSpeed: number;
+  isDinoOnTrain: boolean;
   onFinishGame: () => void;
+  onStartTrain: () => void;
 }
 
-const gemImageUrls = [Gem1, Gem2, Gem3, Gem4, Gem5, Gem6];
+interface Gem {
+  id: number;
+  left: number;
+  bottom: number;
+  imageUrl: string;
+  isTaken: boolean;
+}
 
-const gameGemsNumber = 100;
-
-const getNewGem = () => ({
+const getNewGem = (isDinoOnTrain: boolean): Gem => ({
   id: Date.now(),
   left: window.innerWidth + 50,
-  bottom: Math.floor(Math.random() * 400),
+  bottom: Math.floor(Math.random() * 400) + (isDinoOnTrain ? 150 : 0),
   imageUrl: gemImageUrls[Math.floor(Math.random() * gemImageUrls.length)],
   isTaken: false,
 });
 
-const useGems = ({ dinoSpeed, onFinishGame }: UseGemsParams) => {
-  const [gems, setGems] = useState([getNewGem()]);
+const useGems = ({
+  dinoSpeed,
+  isDinoOnTrain,
+  onStartTrain,
+  onFinishGame,
+}: UseGemsParams) => {
+  const isDinoOnTrainRef = useRef(false);
+
+  const [gems, setGems] = useState<Gem[]>([]);
   const [gemCounter, setGemCounter] = useState(0);
 
   const increaseGemCounter = useCallback(() => {
     setGemCounter((previousGemCounter) => previousGemCounter + 1);
   }, []);
 
+  const onTakeGem = useCallback(
+    (gemId: number) => {
+      setGems((previousGems) =>
+        previousGems.map((gem) => {
+          if (gemId !== gem.id) {
+            return gem;
+          }
+          return {
+            ...gem,
+            isTaken: true,
+          };
+        })
+      );
+      increaseGemCounter();
+    },
+    [increaseGemCounter]
+  );
+
   useEffect(() => {
-    if (gemCounter === gameGemsNumber) {
+    isDinoOnTrainRef.current = isDinoOnTrain;
+  }, [isDinoOnTrain]);
+
+  useEffect(() => {
+    if (trainShowsUpAtNumberOfGemsCollected.includes(gemCounter)) {
+      onStartTrain();
+    }
+    if (gemCounter === numberOfGemsToCollect) {
       onFinishGame();
     }
-  }, [onFinishGame, gemCounter]);
+  }, [onFinishGame, gemCounter, onStartTrain]);
 
   useEffect(() => {
     const moveInterval = setInterval(() => {
@@ -62,8 +99,12 @@ const useGems = ({ dinoSpeed, onFinishGame }: UseGemsParams) => {
   useEffect(() => {
     const generateGemInterval = setInterval(() => {
       setGems((previousGems) => {
-        if (dinoSpeed > 0 && gemCounter < gameGemsNumber) {
-          return [...previousGems, getNewGem()];
+        if (
+          dinoSpeed > 0 &&
+          gemCounter < numberOfGemsToCollect &&
+          previousGems.length < 3
+        ) {
+          return [...previousGems, getNewGem(isDinoOnTrainRef.current)];
         }
         return previousGems;
       });
@@ -72,24 +113,6 @@ const useGems = ({ dinoSpeed, onFinishGame }: UseGemsParams) => {
       clearInterval(generateGemInterval);
     };
   }, [dinoSpeed, gemCounter]);
-
-  const onTakeGem = useCallback(
-    (gemId: number) => {
-      setGems((previousGems) =>
-        previousGems.map((gem) => {
-          if (gemId !== gem.id) {
-            return gem;
-          }
-          return {
-            ...gem,
-            isTaken: true,
-          };
-        })
-      );
-      increaseGemCounter();
-    },
-    [increaseGemCounter]
-  );
 
   return { gems, gemCounter, onTakeGem };
 };
