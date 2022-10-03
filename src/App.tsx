@@ -1,5 +1,3 @@
-import { useState, useMemo, useCallback, useRef } from "react";
-
 import Sky from "./Sky";
 import Hills from "./Hills";
 import Gems from "./Gems";
@@ -8,51 +6,33 @@ import Ground from "./Ground";
 import Train from "./Train";
 import Splash from "./Splash";
 import Countdown from "./Countdown";
+import useGame from "./useGame";
+import useTrain from "./useTrain";
 import useDino from "./useDino";
 
 import "./App.css";
 import DinoFamily from "./DinoFamily";
 
 const App = () => {
-  const [isCountdownVisible, setIsCountdownVisible] = useState(false);
+  const {
+    isCountdownVisible,
+    setIsCountdownVisible,
+    isGameFinished,
+    onFinishGame,
+  } = useGame();
 
-  const [isGameFinished, setIsGameFinished] = useState(false);
-
-  const onFinishGame = useCallback(() => {
-    setIsGameFinished(true);
-  }, []);
-
-  const trainRef = useRef<HTMLDivElement>(null);
+  const { isTrainGoing, onStartTrain, onStopTrain, trainRef } = useTrain();
 
   const {
     dinoState,
     dinoPosition,
+    dinoSpeed,
     isDinoFlipping,
-    dinoRef,
+    isDinoOnTrain,
     startDino,
     stopDino,
-    isDinoOnTrain,
+    dinoRef,
   } = useDino({ isGameFinished, trainRef });
-
-  const dinoSpeed = useMemo(() => {
-    if (["running", "jumping"].includes(dinoState)) {
-      if (isDinoOnTrain) {
-        return 2;
-      }
-      return 1;
-    }
-    return 0;
-  }, [dinoState, isDinoOnTrain]);
-
-  const [isTrainGoing, setIsTrainGoing] = useState(false);
-
-  const onStartTrain = useCallback(() => {
-    setIsTrainGoing(true);
-  }, []);
-
-  const onStopTrain = useCallback(() => {
-    setIsTrainGoing(false);
-  }, []);
 
   return (
     <>

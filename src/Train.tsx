@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 
+import { trainSpeed } from "./constants";
+
 import TrainImageUrl from "./assets/train.png";
 
 import "./Train.css";
@@ -9,8 +11,6 @@ interface TrainProps {
   trainRef: React.RefObject<HTMLDivElement>;
   onStopTrain: () => void;
 }
-
-const trainSpeed = 2.25;
 
 const Train = ({ dinoSpeed, trainRef, onStopTrain }: TrainProps) => {
   const [position, setPosition] = useState(-1345);

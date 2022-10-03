@@ -4,6 +4,8 @@ import {
   gravity,
   minimumJumpAcceleration,
   maximumJumpAcceleration,
+  dinoSpeedRunning,
+  dinoSpeedOnTrain,
 } from "./constants";
 
 export type DinoState = "idle" | "running" | "jumping";
@@ -21,15 +23,12 @@ const defaultClientRect = {
 };
 
 const useDino = ({ isGameFinished, trainRef }: UseDinoParams) => {
-  const [dinoState, setDinoState] = useState<DinoState>("idle");
-  const [dinoPosition, setDinoPosition] = useState(0);
-  const [dinoAcceleration, setDinoAcceleration] = useState(0);
-  const [isDinoFlipping, setIsDinoFlipping] = useState(false);
-
-  const accelerationCounter = useRef(0);
-
   const dinoRef = useRef<HTMLDivElement>(null);
+  const accelerationCounter = useRef(0);
+  const isDinoOverTrainRef = useRef(false);
+  const floorRef = useRef(0);
 
+  const [dinoState, setDinoState] = useState<DinoState>("idle");
   const startDino = useCallback(() => {
     setDinoState("running");
   }, []);
@@ -38,13 +37,25 @@ const useDino = ({ isGameFinished, trainRef }: UseDinoParams) => {
     setDinoState("idle");
   }, []);
 
-  const isDinoOverTrainRef = useRef(false);
-  const floorRef = useRef(0);
-
+  const [dinoPosition, setDinoPosition] = useState(0);
+  const [dinoAcceleration, setDinoAcceleration] = useState(0);
+  const [isDinoFlipping, setIsDinoFlipping] = useState(false);
   const [isDinoOnTrain, setIsDinoOnTrain] = useState(false);
 
+  // Calculate dino speed
+  const dinoSpeed = useMemo(() => {
+    if (["running", "jumping"].includes(dinoState)) {
+      if (isDinoOnTrain) {
+        return dinoSpeedOnTrain;
+      }
+      return dinoSpeedRunning;
+    }
+    return 0;
+  }, [dinoState, isDinoOnTrain]);
+
+  // Calculate where floor is depending on whether dino is over the train or not
   useEffect(() => {
-    const trainInterval = setInterval(() => {
+    const calculateFloorInterval = setInterval(() => {
       const {
         left: trainLeft,
         right: trainRight,
@@ -66,8 +77,9 @@ const useDino = ({ isGameFinished, trainRef }: UseDinoParams) => {
         floorRef.current = 0;
       }
     }, 10);
+
     return () => {
-      clearInterval(trainInterval);
+      clearInterval(calculateFloorInterval);
     };
   }, [trainRef]);
 
@@ -80,25 +92,9 @@ const useDino = ({ isGameFinished, trainRef }: UseDinoParams) => {
         );
       }
     }, 10);
+
     return () => {
       clearInterval(accelerationInterval);
-    };
-  }, [dinoAcceleration, dinoPosition, trainRef]);
-
-  // Move dino
-  useEffect(() => {
-    const moveInterval = setInterval(() => {
-      const newDinoPosition = dinoPosition - dinoAcceleration;
-      setDinoPosition(Math.max(newDinoPosition, floorRef.current));
-      if (newDinoPosition < floorRef.current) {
-        setIsDinoOnTrain(floorRef.current > 0);
-        setDinoState("running");
-        setDinoAcceleration(0);
-        setIsDinoFlipping(false);
-      }
-    }, 10);
-    return () => {
-      clearInterval(moveInterval);
     };
   }, [dinoAcceleration, dinoPosition, trainRef]);
 
@@ -113,6 +109,25 @@ const useDino = ({ isGameFinished, trainRef }: UseDinoParams) => {
     }
   }, []);
 
+  // Move dino
+  useEffect(() => {
+    const moveInterval = setInterval(() => {
+      const newDinoPosition = dinoPosition - dinoAcceleration;
+      setDinoPosition(Math.max(newDinoPosition, floorRef.current));
+      if (newDinoPosition < floorRef.current) {
+        setIsDinoOnTrain(floorRef.current > 0);
+        setDinoState("running");
+        setDinoAcceleration(0);
+        setIsDinoFlipping(false);
+      }
+    }, 10);
+
+    return () => {
+      clearInterval(moveInterval);
+    };
+  }, [dinoAcceleration, dinoPosition, trainRef]);
+
+  // Handle controls
   const dinoJumpButtonDownListener = useCallback(
     (event: KeyboardEvent | MouseEvent) => {
       if (
@@ -147,7 +162,6 @@ const useDino = ({ isGameFinished, trainRef }: UseDinoParams) => {
     []
   );
 
-  // Jump
   useEffect(() => {
     document.addEventListener("keydown", dinoJumpButtonDownListener);
     document.addEventListener("keyup", dinoJumpButtonUpListener);
@@ -168,6 +182,7 @@ const useDino = ({ isGameFinished, trainRef }: UseDinoParams) => {
     isDinoFlipping,
     isDinoOnTrain,
     dinoRef,
+    dinoSpeed,
     startDino,
     stopDino,
   };
