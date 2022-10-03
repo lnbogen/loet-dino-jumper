@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 
 import {
   gravity,
@@ -10,9 +10,17 @@ export type DinoState = "idle" | "running" | "jumping";
 
 interface UseDinoParams {
   isGameFinished: boolean;
+  trainRef: React.RefObject<HTMLDivElement>;
 }
 
-const useDino = ({ isGameFinished }: UseDinoParams) => {
+const defaultClientRect = {
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
+};
+
+const useDino = ({ isGameFinished, trainRef }: UseDinoParams) => {
   const [dinoState, setDinoState] = useState<DinoState>("idle");
   const [dinoPosition, setDinoPosition] = useState(0);
   const [dinoAcceleration, setDinoAcceleration] = useState(0);
@@ -30,10 +38,43 @@ const useDino = ({ isGameFinished }: UseDinoParams) => {
     setDinoState("idle");
   }, []);
 
+  const isDinoOverTrainRef = useRef(false);
+  const floorRef = useRef(0);
+
+  const [isDinoOnTrain, setIsDinoOnTrain] = useState(false);
+
+  useEffect(() => {
+    const trainInterval = setInterval(() => {
+      const {
+        left: trainLeft,
+        right: trainRight,
+        top: trainTop,
+      } = trainRef.current?.getBoundingClientRect() ?? defaultClientRect;
+      const {
+        left: dinoLeft,
+        right: dinoRight,
+        bottom: dinoBottom,
+      } = dinoRef.current?.getBoundingClientRect() ?? defaultClientRect;
+      const isDinoOverTrain =
+        dinoLeft > trainLeft &&
+        dinoRight < trainRight - 100 &&
+        dinoBottom <= trainTop + 20;
+      isDinoOverTrainRef.current = isDinoOverTrain;
+      if (isDinoOverTrain) {
+        floorRef.current = 150;
+      } else {
+        floorRef.current = 0;
+      }
+    }, 10);
+    return () => {
+      clearInterval(trainInterval);
+    };
+  }, [trainRef]);
+
   // Accelerate dino
   useEffect(() => {
     const accelerationInterval = setInterval(() => {
-      if (dinoPosition > 0) {
+      if (dinoPosition > floorRef.current) {
         setDinoAcceleration(
           (previousAcceleration) => previousAcceleration + gravity
         );
@@ -42,14 +83,15 @@ const useDino = ({ isGameFinished }: UseDinoParams) => {
     return () => {
       clearInterval(accelerationInterval);
     };
-  }, [dinoAcceleration, dinoPosition]);
+  }, [dinoAcceleration, dinoPosition, trainRef]);
 
   // Move dino
   useEffect(() => {
     const moveInterval = setInterval(() => {
       const newDinoPosition = dinoPosition - dinoAcceleration;
-      setDinoPosition(Math.max(newDinoPosition, 0));
-      if (newDinoPosition < 0) {
+      setDinoPosition(Math.max(newDinoPosition, floorRef.current));
+      if (newDinoPosition < floorRef.current) {
+        setIsDinoOnTrain(floorRef.current > 0);
         setDinoState("running");
         setDinoAcceleration(0);
         setIsDinoFlipping(false);
@@ -58,7 +100,7 @@ const useDino = ({ isGameFinished }: UseDinoParams) => {
     return () => {
       clearInterval(moveInterval);
     };
-  }, [dinoAcceleration, dinoPosition]);
+  }, [dinoAcceleration, dinoPosition, trainRef]);
 
   const dinoAccelerationTimeout = useCallback(() => {
     if (accelerationCounter.current > 0) {
@@ -124,6 +166,7 @@ const useDino = ({ isGameFinished }: UseDinoParams) => {
     dinoState,
     dinoPosition,
     isDinoFlipping,
+    isDinoOnTrain,
     dinoRef,
     startDino,
     stopDino,

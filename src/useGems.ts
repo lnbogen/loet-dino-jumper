@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 
 import Gem1 from "./assets/gem-1.png";
 import Gem2 from "./assets/gem-2.png";
@@ -9,34 +9,58 @@ import Gem6 from "./assets/gem-6.png";
 
 interface UseGemsParams {
   dinoSpeed: number;
+  isDinoOnTrain: boolean;
   onFinishGame: () => void;
+  onStartTrain: () => void;
 }
 
 const gemImageUrls = [Gem1, Gem2, Gem3, Gem4, Gem5, Gem6];
 
 const gameGemsNumber = 100;
+const trainGemsNumbers = [15, 40, 65];
 
-const getNewGem = () => ({
+interface Gem {
+  id: number;
+  left: number;
+  bottom: number;
+  imageUrl: string;
+  isTaken: boolean;
+}
+
+const getNewGem = (isDinoOnTrain: boolean): Gem => ({
   id: Date.now(),
   left: window.innerWidth + 50,
-  bottom: Math.floor(Math.random() * 400),
+  bottom: Math.floor(Math.random() * 400) + (isDinoOnTrain ? 150 : 0),
   imageUrl: gemImageUrls[Math.floor(Math.random() * gemImageUrls.length)],
   isTaken: false,
 });
 
-const useGems = ({ dinoSpeed, onFinishGame }: UseGemsParams) => {
-  const [gems, setGems] = useState([getNewGem()]);
+const useGems = ({
+  dinoSpeed,
+  isDinoOnTrain,
+  onStartTrain,
+  onFinishGame,
+}: UseGemsParams) => {
+  const [gems, setGems] = useState<Gem[]>([]);
   const [gemCounter, setGemCounter] = useState(0);
 
   const increaseGemCounter = useCallback(() => {
     setGemCounter((previousGemCounter) => previousGemCounter + 1);
   }, []);
 
+  const isDinoOnTrainRef = useRef(false);
   useEffect(() => {
+    isDinoOnTrainRef.current = isDinoOnTrain;
+  }, [isDinoOnTrain]);
+
+  useEffect(() => {
+    if (trainGemsNumbers.includes(gemCounter)) {
+      onStartTrain();
+    }
     if (gemCounter === gameGemsNumber) {
       onFinishGame();
     }
-  }, [onFinishGame, gemCounter]);
+  }, [onFinishGame, gemCounter, onStartTrain]);
 
   useEffect(() => {
     const moveInterval = setInterval(() => {
@@ -62,8 +86,12 @@ const useGems = ({ dinoSpeed, onFinishGame }: UseGemsParams) => {
   useEffect(() => {
     const generateGemInterval = setInterval(() => {
       setGems((previousGems) => {
-        if (dinoSpeed > 0 && gemCounter < gameGemsNumber) {
-          return [...previousGems, getNewGem()];
+        if (
+          dinoSpeed > 0 &&
+          gemCounter < gameGemsNumber &&
+          previousGems.length < 3
+        ) {
+          return [...previousGems, getNewGem(isDinoOnTrainRef.current)];
         }
         return previousGems;
       });
