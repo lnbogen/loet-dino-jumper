@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "classnames": "^2.3.2",
+    "gh-pages": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.4.1",
@@ -19,7 +20,9 @@
     "lint-js": "eslint \"**/*.{ts,tsx}\"",
     "lint-css": "stylelint \"**/*.css\"",
     "prettier": "prettier --check .",
-    "test:coverage": "npm test -- --coverage --watchAll=false"
+    "test:coverage": "npm test -- --coverage --watchAll=false",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
