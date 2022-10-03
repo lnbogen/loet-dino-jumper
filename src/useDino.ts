@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useRef } from "react";
-import useOnMount from "react-hook-on-mount";
 
 import {
   gravity,
@@ -9,7 +8,11 @@ import {
 
 export type DinoState = "idle" | "running" | "jumping";
 
-const useDino = () => {
+interface UseDinoParams {
+  isGameFinished: boolean;
+}
+
+const useDino = ({ isGameFinished }: UseDinoParams) => {
   const [dinoState, setDinoState] = useState<DinoState>("idle");
   const [dinoPosition, setDinoPosition] = useState(0);
   const [dinoAcceleration, setDinoAcceleration] = useState(0);
@@ -19,12 +22,13 @@ const useDino = () => {
 
   const dinoRef = useRef<HTMLDivElement>(null);
 
-  // Start running after 1s
-  useOnMount(() => {
-    setTimeout(() => {
-      setDinoState("running");
-    }, 1000);
-  });
+  const startDino = useCallback(() => {
+    setDinoState("running");
+  }, []);
+
+  const stopDino = useCallback(() => {
+    setDinoState("idle");
+  }, []);
 
   // Accelerate dino
   useEffect(() => {
@@ -72,7 +76,8 @@ const useDino = () => {
       if (
         ((event.type === "keydown" && (event as KeyboardEvent).key === " ") ||
           (event.type === "mousedown" && (event as MouseEvent).button === 0)) &&
-        dinoState === "running"
+        dinoState === "running" &&
+        !isGameFinished
       ) {
         setDinoState("jumping");
         setDinoAcceleration(
@@ -85,7 +90,7 @@ const useDino = () => {
         setTimeout(dinoAccelerationTimeout, 100);
       }
     },
-    [dinoAccelerationTimeout, dinoState]
+    [dinoAccelerationTimeout, dinoState, isGameFinished]
   );
 
   const dinoJumpButtonUpListener = useCallback(
@@ -115,7 +120,14 @@ const useDino = () => {
     };
   }, [dinoJumpButtonDownListener, dinoJumpButtonUpListener]);
 
-  return { dinoState, dinoPosition, isDinoFlipping, dinoRef };
+  return {
+    dinoState,
+    dinoPosition,
+    isDinoFlipping,
+    dinoRef,
+    startDino,
+    stopDino,
+  };
 };
 
 export default useDino;

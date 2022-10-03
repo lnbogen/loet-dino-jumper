@@ -1,0 +1,57 @@
+.countdown {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.countdown .number {
+  position: absolute;
+  font-size: 35vh;
+  animation: countdown-number-fade 2s ease-in-out 1 forwards;
+  transform: scale(1.5);
+  opacity: 0;
+  color: hsl(81deg 59% 44%);
+  text-shadow: 10px 10px 0 black;
+  font-weight: bold;
+}
+
+.countdown .number.three {
+  animation-delay: 1s;
+}
+
+.countdown .number.two {
+  animation-delay: 3s;
+}
+
+.countdown .number.one {
+  animation-delay: 5s;
+}
+
+.countdown .number.go {
+  animation-delay: 7s;
+}
+
+@keyframes countdown-number-fade {
+  from {
+    transform: rotate(-2.5deg) scale(0.75);
+    opacity: 0;
+  }
+
+  50% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+
+  60% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+
+  to {
+    transform: rotate(-2.5deg) scale(2);
+    opacity: 0;
+  }
+}
