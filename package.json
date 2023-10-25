@@ -1,5 +1,5 @@
 {
-  "name": "daniel-dino-jumper",
+  "name": "loet-bunny-jumper",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -61,5 +61,5 @@
     "stylelint-prettier": "^2.0.0",
     "typescript": "^4.8.4"
   },
-  "homepage": "/daniel-dino-jumper"
+  "homepage": "/loet-bunny-jumper"
 }

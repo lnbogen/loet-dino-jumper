@@ -11,7 +11,7 @@ const Splash = ({ onStartGame }: SplashProps) => {
   const [isVisible, setIsVisible] = useState(true);
   return (
     <div className={classNames("splash", { hidden: !isVisible })}>
-      <h1>Dani’s Dino Jumper</h1>
+      <h1>Loet's Bunny Jumper</h1>
       <button
         onClick={() => {
           setIsVisible(false);
